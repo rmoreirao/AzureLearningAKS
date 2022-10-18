@@ -2,6 +2,8 @@ name: Build and deploy Web App
 on:
   push:
     branches: [ "main" ]
+    paths: 'Shopping/Shopping.Client/**'
+    
   workflow_dispatch:
   
 jobs:
