@@ -24,7 +24,7 @@
 # For more information on the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
 
-name: Build and deploy a container to an Azure Web App
+name: Build and deploy Web App
 on:
   push:
     branches: [ "main" ]
@@ -34,6 +34,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+        - uses: actions/checkout@v3
+        
         - name: Log in with Azure
           uses: Azure/login@v1
           with:
