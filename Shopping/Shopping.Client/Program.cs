@@ -1,7 +1,15 @@
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.AddHttpClient("ShoppingAPIClient",client => {
+    client.BaseAddress = new Uri(builder.Configuration["ShoppingAPIUrl"]);
+});
 
 var app = builder.Build();
 
