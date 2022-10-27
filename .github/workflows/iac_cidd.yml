@@ -9,6 +9,10 @@ on:
     paths: 
       - 'iac/**'
 
+env:
+  environment: 'prod'
+  rgName: rg-shoppingwebapprmoreirao-$rgName-${{ secrets.LOCATION_SUFFIX }}
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -29,6 +33,15 @@ jobs:
           # CLIENT_SECRET = Password created for this specific connection - this can further enhanced
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
+      - name: Create Resource Group
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+            az group create --name $rgName --location ${{ secrets.LOCATION }}
+
+
       # Runs a single command using the runners shell
       - name: Run bicep lint
         working-directory: iac/
@@ -36,12 +49,12 @@ jobs:
     
       - name: Run bicep validation
         working-directory: iac/
-        run: az deployment sub validate --name "${{ steps.resources_prefix.outputs.result }}" --template-file main.bicep --location "${{ secrets.LOCATION }}" --parameters resourcesPrefix="${{ steps.resources_prefix.outputs.result }}"
+        run: az deployment group validate --name "${{ steps.resources_prefix.outputs.result }}" --resource-group $rgName --template-file main.bicep --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="$rgName"
 
       - name: Run bicep preview
         working-directory: iac/
-        run: az deployment sub what-if --name "${{ steps.resources_prefix.outputs.result }}" --template-file main.bicep --location "${{ secrets.LOCATION }}" --parameters resourcesPrefix="${{ steps.resources_prefix.outputs.result }}" 
+        run: az deployment group what-if --name "${{ steps.resources_prefix.outputs.result }}" --resource-group $rgName --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="$rgName"
 
       - name: Deploy bicep
         working-directory: iac/
-        run: az deployment sub create --name "${{ steps.resources_prefix.outputs.result }}" --template-file main.bicep --location "${{ secrets.LOCATION }}" --parameters resourcesPrefix="${{ steps.resources_prefix.outputs.result }}" 
+        run: az deployment group create --name "${{ steps.resources_prefix.outputs.result }}" --resource-group $rgName --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="$rgName" 
