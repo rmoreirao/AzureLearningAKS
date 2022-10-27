@@ -1,6 +1,5 @@
 {
     "yaml.schemas": {
-        "file:///c%3A/Users/rmoreirao/.vscode/extensions/docsmsft.docs-yaml-0.2.9/out/yaml-support/toc.schema.json": "/toc\\.yml/i",
         "kubernetes://schema/apps/v1%40deployment": [
             "file:///c%3A/LocalDev/github/AzureLearningAKS/k8s/mongo.yaml",
             "file:///c%3A/LocalDev/github/AzureLearningAKS/k8s/shoppingapi.yaml"
