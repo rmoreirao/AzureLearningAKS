@@ -50,12 +50,12 @@ jobs:
     
       - name: Run bicep validation
         working-directory: iac/
-        run: az deployment group validate --name "${{ steps.resources_prefix.outputs.result }}" --resource-group ${{ env.rgName }} --template-file main.bicep --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}"
+        run: az deployment group validate --name "Validate" --resource-group ${{ env.rgName }} --template-file main.bicep --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}"
 
       - name: Run bicep preview
         working-directory: iac/
-        run: az deployment group what-if --name "${{ steps.resources_prefix.outputs.result }}" --resource-group ${{ env.rgName }}  --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}"
+        run: az deployment group what-if --name "Preview" --resource-group ${{ env.rgName }}  --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}"
 
       - name: Deploy bicep
         working-directory: iac/
-        run: az deployment group create --name "${{ steps.resources_prefix.outputs.result }}" --resource-group ${{ env.rgName }}  --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}" 
+        run: az deployment group create --name "Deploy" --resource-group ${{ env.rgName }}  --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}" 
