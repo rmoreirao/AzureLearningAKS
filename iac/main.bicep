@@ -3,7 +3,7 @@
 1) Command Line to execute bicep file: 
 az group create --name rg-shoppingwebapprmoreirao-prod-we --location westeurope
 
-2) Command Line to load bicep file - use Bash
+2) Command Line to load bicep file - use  Bash
 az deployment group create \
   --name DeployShoppingInfra \
   --resource-group rg-shoppingwebapprmoreirao-prod-we \
