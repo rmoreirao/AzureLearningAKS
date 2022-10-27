@@ -3,7 +3,8 @@ on:
   push:
     branches: [ "main" ]
     paths: 
-      - 'Shopping/**'
+      - 'Shopping/Shopping.Client/**'
+      - 'aks/shoppingclient.yaml'
       
   workflow_dispatch:
 
@@ -31,11 +32,6 @@ jobs:
           working-directory: Shopping
           run:  az acr build --image shopping/shopping-web-app:${{ github.sha }}   --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }}  --file Shopping.Client/Dockerfile .
 
-
-        - name: Build Shopping API docker image and push to ACR
-          working-directory: Shopping
-          run:  az acr build --image shopping/shopping-api:${{ github.sha }}  --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }} --file Shopping.API/Dockerfile .
-
          # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
         - name: Get K8s context
           uses: azure/aks-set-context@v3
@@ -48,7 +44,7 @@ jobs:
           uses: Azure/k8s-deploy@v4
           with:
             action: deploy
-            manifests: ./aks/
+            manifests: |
+              aks/shoppingclient.yaml
             images: |
-              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}
               ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-web-app:${{ github.sha }}
