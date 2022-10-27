@@ -12,7 +12,7 @@ on:
 
 env:
   environment: 'prod'
-  rgName: rg-shoppingwebapprmoreirao-$environment-${{ secrets.LOCATION_SUFFIX }}
+  rgName: rg-shoppingwebapprmoreirao-${{ env.environment }}-${{ secrets.LOCATION_SUFFIX }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
