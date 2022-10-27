@@ -11,7 +11,7 @@ env:
   environment: 'prod'
   rgName: rg-shoppingwebapprmoreirao-prod-${{ secrets.LOCATION_SUFFIX }}
   AKS_CLUSTER_NAME: aks-shoppingrmoreirao-prod-${{ secrets.LOCATION_SUFFIX }}
-  ACR: acrshoppingrmoreiraowe
+  AZURE_CONTAINER_REGISTRY: acrshoppingrmoreiraowe
 
 jobs:
   
