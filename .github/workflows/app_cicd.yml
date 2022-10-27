@@ -29,7 +29,7 @@ jobs:
 
         - name: Build Shopping Weg App docker image and push to ACR
           working-directory: Shopping
-          run:  az acr build --image shopping/shopping-web-app:latest  --registry acrshoppingrmoreiraowe --build-arg build_version=latest --file Shopping.Client/Dockerfile .
+          run:  az acr build --image shopping/shopping-web-app:${{ github.sha }}   --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }}  --file Shopping.Client/Dockerfile .
 
 
         - name: Build Shopping API docker image and push to ACR
