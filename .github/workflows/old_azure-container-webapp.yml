@@ -1,9 +1,9 @@
-name: Build and deploy API
+name: Build and deploy Web App
 on:
-  push:
-    branches: [ "main" ]
-    paths: 
-      - 'Shopping/Shopping.API/**'
+  # push:
+  #   branches: [ "main" ]
+  #   paths: 
+  #     - 'Shopping/Shopping.Client/**'
     
   workflow_dispatch:
   
@@ -23,11 +23,11 @@ jobs:
 
         - name: Build docker image and push to ACR
           working-directory: Shopping
-          run:  az acr build --image shopping/shopping-api:latest  --registry acrshoppingrmoreiraowe --build-arg build_version=latest --file Shopping.API/Dockerfile .
+          run:  az acr build --image shopping/shopping-web-app:latest  --registry acrshoppingrmoreiraowe --build-arg build_version=latest --file Shopping.Client/Dockerfile .
 
-        # - name: Deploy API
+        # - name: Deploy to Azure Web App
         #   id: deploy-to-webapp
         #   uses: azure/webapps-deploy@v2
         #   with:
-        #     app-name: ${{ secrets.API_APP_NAME }}
-        #     images: '${{ secrets.ACR_URL }}/shopping/shopping-api:latest'
+        #     app-name: ${{ secrets.WEB_APP_NAME }}
+        #     images: '${{ secrets.ACR_URL }}/shopping/shopping-web-app:latest'
