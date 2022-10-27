@@ -8,6 +8,7 @@ on:
   push:
     paths: 
       - 'iac/**'
+  workflow_dispatch:
 
 env:
   environment: 'prod'
@@ -16,7 +17,7 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  CI:
+  CI_CD:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -39,7 +40,7 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
-            az group create --name $rgName --location ${{ secrets.LOCATION }}
+            az group create --name ${{ env.rgName }} --location ${{ secrets.LOCATION }}
 
 
       # Runs a single command using the runners shell
@@ -49,12 +50,12 @@ jobs:
     
       - name: Run bicep validation
         working-directory: iac/
-        run: az deployment group validate --name "${{ steps.resources_prefix.outputs.result }}" --resource-group $rgName --template-file main.bicep --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="$rgName"
+        run: az deployment group validate --name "${{ steps.resources_prefix.outputs.result }}" --resource-group ${{ env.rgName }} --template-file main.bicep --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}"
 
       - name: Run bicep preview
         working-directory: iac/
-        run: az deployment group what-if --name "${{ steps.resources_prefix.outputs.result }}" --resource-group $rgName --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="$rgName"
+        run: az deployment group what-if --name "${{ steps.resources_prefix.outputs.result }}" --resource-group ${{ env.rgName }}  --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}"
 
       - name: Deploy bicep
         working-directory: iac/
-        run: az deployment group create --name "${{ steps.resources_prefix.outputs.result }}" --resource-group $rgName --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="$rgName" 
+        run: az deployment group create --name "${{ steps.resources_prefix.outputs.result }}" --resource-group ${{ env.rgName }}  --template-file main.bicep  --parameters location_suffix="${{ secrets.LOCATION_SUFFIX }}" environment="${{ env.environment }}" 

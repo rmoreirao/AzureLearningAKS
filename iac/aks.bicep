@@ -1,5 +1,5 @@
 /*
-Deploy AKS bicep
+Deploy AKS  bicep
 
 az deployment group create \
   --name DeployShoppingInfra \
