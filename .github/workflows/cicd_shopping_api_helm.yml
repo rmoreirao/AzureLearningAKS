@@ -53,7 +53,6 @@ jobs:
         - name: Get K8s context
           uses: azure/aks-set-context@v3
           with:
-            creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
@@ -76,19 +75,14 @@ jobs:
 
         - uses: actions/upload-artifact@v3
           with:
-            name: my-artifact
+            name: aks-manifest
             path: ${{ steps.bake.outputs.manifestsBundle }}
 
-        - name: Test output
-          run: echo ${{ steps.bake.outputs.manifestsBundle }}
-
-        - name: Test output
-          run: cat ${{ steps.bake.outputs.manifestsBundle }}
-        
-        # - name: Deploy to k8s
-        #   uses: Azure/k8s-deploy@v1.2
-        #   with:
-        #     action: deploy
-        #     manifests: ${{ steps.bake.outputs.manifestsBundle }}
-        #     images: |
-        #       ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}
+        - name: Deploy to k8s
+          uses: Azure/k8s-deploy@v4
+          with:
+            action: deploy
+            manifests: |
+              ${{ steps.bake.outputs.manifestsBundle }}
+            images: |
+              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}

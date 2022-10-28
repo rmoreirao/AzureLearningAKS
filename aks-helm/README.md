@@ -15,7 +15,8 @@ helm upgrade \
             --wait \
             shoppingapi \
             ./aks-helm/shoppingapi \
-            -- debug 
+            --debug 
+
 
 ### To delete the resources
 helm upgrade shoppingapi
