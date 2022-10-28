@@ -66,21 +66,21 @@ jobs:
             arguments: |
               --debug
             helmChart: './aks-helm/shoppingapi/'
-            # overrides: |
-            #   db.user: root
+            overrides: |
+              db.user: rootXXX
+              db.password: exampleXXX
             #   db.user_base64: cm9vdA==
-            #   db.password: example
             #   db.password_base64: ZXhhbXBsZQ==
             helm-version: "latest"
           id: bake
         
-        - name: Deploy to k8s
-          uses: Azure/k8s-deploy@v1.2
-          with:
-            action: deploy
-            manifests: ${{ steps.bake.outputs.manifestsBundle }}
-            images: |
-              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}
+        # - name: Deploy to k8s
+        #   uses: Azure/k8s-deploy@v1.2
+        #   with:
+        #     action: deploy
+        #     manifests: ${{ steps.bake.outputs.manifestsBundle }}
+        #     images: |
+        #       ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}
 
         #  # Deploys application based on given manifest file
         # - name: Run Helm Deploy
