@@ -46,6 +46,7 @@ jobs:
         - name: Get K8s context
           uses: azure/aks-set-context@v3
           with:
+            creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
