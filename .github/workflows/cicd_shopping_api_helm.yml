@@ -62,8 +62,8 @@ jobs:
           uses: azure/k8s-bake@v2
           with:
             renderEngine: "helm"
+            silent: 'false'
             helmChart: './aks-helm/shoppingapi/'
-            overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
             overrides: |
               db.user: root
               db.user_base64: cm9vdA==
