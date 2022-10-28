@@ -1,0 +1,8 @@
+db:
+  user: root
+  user_base64: cm9vdA==
+  password: example
+  password_base64: ZXhhbXBsZQ==
+
+image:
+  tag: latest

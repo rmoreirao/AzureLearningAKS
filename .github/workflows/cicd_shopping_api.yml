@@ -1,14 +1,11 @@
-name: Build and deploy App
+name: Build and deploy API
 on:
-  push:
-    branches: [ "main" ]
-    paths: 
-      - 'Shopping/Shopping.API/**'
-      - 'aks/mongo-configmap.yaml'
-      - 'aks/mongo-secret.yaml'
-      - 'aks/mongo.yaml'
-      - 'aks/shoppingapi-configmap.yaml'
-      - 'aks/shoppingapi.yaml'
+  # Default pipeline for the Shopping API is the heml pipeline
+  # push:
+  #   branches: [ "main" ]
+  #   paths: 
+  #     - 'Shopping/Shopping.API/**'
+  #     - 'aks/shoppingapi.yaml'
       
   workflow_dispatch:
 
@@ -49,10 +46,6 @@ jobs:
           with:
             action: deploy
             manifests: |
-              aks/mongo-configmap.yaml
-              aks/mongo-secret.yaml
-              aks/mongo.yaml
-              aks/shoppingapi-configmap.yaml
               aks/shoppingapi.yaml
             images: |
               ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}

@@ -1,10 +1,10 @@
-name: Build and deploy Client Web App
+name: Build and deploy API - Helm
 on:
   push:
     branches: [ "main" ]
     paths: 
-      - 'Shopping/Shopping.Client/**'
-      - 'aks/shoppingclient.yaml'
+      - 'Shopping/Shopping.API/**'
+      - 'aks/shoppingapi.yaml'
       
   workflow_dispatch:
 
@@ -21,6 +21,11 @@ jobs:
     steps:
         - uses: actions/checkout@v3
         
+        - name: Install Helm
+          uses: Azure/setup-helm@v1
+          with:
+            version: v3.3.1
+        
         - name: Log in with Azure
           uses: Azure/login@v1
           with:
@@ -28,9 +33,9 @@ jobs:
             # CLIENT_SECRET = Password created for this specific connection - this can further enhanced
             creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
-        - name: Build Shopping Weg App docker image and push to ACR
+        - name: Build Shopping API docker image and push to ACR
           working-directory: Shopping
-          run:  az acr build --image shopping/shopping-web-app:${{ github.sha }}   --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }}  --file Shopping.Client/Dockerfile .
+          run:  az acr build --image shopping/shopping-api:${{ github.sha }}  --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }} --file Shopping.API/Dockerfile .
 
          # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
         - name: Get K8s context
@@ -40,11 +45,17 @@ jobs:
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
          # Deploys application based on given manifest file
-        - name: Deploys application
-          uses: Azure/k8s-deploy@v4
-          with:
-            action: deploy
-            manifests: |
-              aks/shoppingclient.yaml
-            images: |
-              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-web-app:${{ github.sha }}
+        - name: Run Helm Deploy
+          run: |
+            helm upgrade \
+              --install \
+              --atomic \
+              --debug \
+              --wait \
+              shoppingapi \
+              ./aks-helm/shoppingapi \
+              --set db.user=root \
+              --set db.user_base64=cm9vdA== \
+              --set db.password=example \
+              --set db.password_base64=ZXhhbXBsZQ== \
+              --set image.tag=${{ github.sha }}
