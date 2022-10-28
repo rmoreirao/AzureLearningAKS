@@ -41,11 +41,6 @@ jobs:
     steps:
         - uses: actions/checkout@v3
 
-        - name: Install Helm
-          uses: Azure/setup-helm@v1
-          with:
-            version: v3.10.0
-
         - name: Log in with Azure
           uses: Azure/login@v1
           with:
