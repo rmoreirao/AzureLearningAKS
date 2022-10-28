@@ -74,6 +74,11 @@ jobs:
             helm-version: "latest"
           id: bake
 
+        - uses: actions/download-artifact@v3
+          with:
+            name: my-artifact
+            path: ${{ steps.bake.outputs.manifestsBundle }}
+
         - name: Test output
           run: echo ${{ steps.bake.outputs.manifestsBundle }}
 
