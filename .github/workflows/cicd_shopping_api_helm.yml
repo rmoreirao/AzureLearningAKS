@@ -40,7 +40,7 @@ jobs:
         - name: Install Helm
           uses: Azure/setup-helm@v1
           with:
-            version: v3.3.1
+            version: v3.10.0
 
         - name: Log in with Azure
           uses: Azure/login@v1
