@@ -89,7 +89,7 @@ spec:
     spec:
       containers:
         - name: shoppingapi
-          image: acrshoppingrmoreiraowe.azurecr.io/shopping/shopping-api:{{.Values.image.tag}}
+          image: acrshoppingrmoreiraowe.azurecr.io/shopping/shopping-api:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
