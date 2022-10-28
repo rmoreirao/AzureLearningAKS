@@ -32,6 +32,10 @@ jobs:
           working-directory: Shopping
           run:  az acr build --image shopping/shopping-api:${{ github.sha }}  --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }} --file Shopping.API/Dockerfile .
   deploy:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -54,21 +58,46 @@ jobs:
         - name: Get K8s context
           uses: azure/aks-set-context@v3
           with:
+            creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
-         # Deploys application based on given manifest file
-        - name: Run Helm Deploy
-          run: |
-            helm upgrade \
-              --install \
-              --atomic \
-              --debug \
-              --wait \
-              shoppingapi \
-              ./aks-helm/shoppingapi \
-              --set db.user=root \
-              --set db.user_base64=cm9vdA== \
-              --set db.password=example \
-              --set db.password_base64=ZXhhbXBsZQ== \
-              --set image.tag=${{ github.sha }}
+        # Runs Helm to create manifest files
+        - name: Bake deployment
+          uses: azure/k8s-bake@v2
+          with:
+            renderEngine: "helm"
+            helmChart: './aks-helm/shoppingapi/'
+            overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
+            overrides: |
+              db.user: root
+              db.user_base64: cm9vdA==
+              db.password: example
+              db.password_base64: ZXhhbXBsZQ==
+              image.tag: ${{ github.sha }}
+            helm-version: "latest"
+          id: bake
+        
+        - name: Deploy to k8s
+          uses: Azure/k8s-deploy@v1.2
+          with:
+            action: deploy
+            manifests: ${{ steps.bake.outputs.manifestsBundle }}
+            images: |
+              ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/shopping/shopping-api:${{ github.sha }}
+
+        #  # Deploys application based on given manifest file
+        # - name: Run Helm Deploy
+        #   run: |
+        #     helm upgrade \
+        #       --install \
+        #       --atomic \
+        #       --debug \
+        #       --wait \
+        #       shoppingapi \
+        #       ./aks-helm/shoppingapi \
+        #       --set db.user=root \
+        #       --set db.user_base64=cm9vdA== \
+        #       --set db.password=example \
+        #       --set db.password_base64=ZXhhbXBsZQ== \
+        #       --set image.tag=${{ github.sha }}
