@@ -21,6 +21,9 @@ jobs:
     steps:
         - uses: actions/checkout@v3
         
+        - name: Install kubelogin
+          run: brew install Azure/kubelogin/kubelogin
+
         - name: Log in with Azure
           uses: Azure/login@v1
           with:
