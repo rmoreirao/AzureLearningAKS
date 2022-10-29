@@ -83,10 +83,10 @@ jobs:
               --debug
             helmChart: './aks-helm/shoppingapi/'
             overrides: |
-              db.user:root
-              db.password:example
-              db.user_base64:cm9vdA==
-              db.password_base64:ZXhhbXBsZQ==
+              db.user:${{ secrets.MONGO_DB_USER }}
+              db.password:${{ secrets.MONGO_DB_PASS }}
+              db.user_base64:${{ secrets.MONGO_DB_USER_BASE64 }}
+              db.password_base64:${{ secrets.MONGO_DB_PASS_BASE64 }}
             helm-version: "latest"
           id: bake
 
