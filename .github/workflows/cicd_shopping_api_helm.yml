@@ -63,9 +63,6 @@ jobs:
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
-        - name: Install kubelogin
-          run: kubelogin --version
-
         # Runs Helm to create manifest files
         - name: Bake deployment
           uses: azure/k8s-bake@v2

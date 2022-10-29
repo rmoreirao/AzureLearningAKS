@@ -32,10 +32,22 @@ jobs:
           working-directory: Shopping
           run:  az acr build --image shopping/shopping-web-app:${{ github.sha }}   --registry acrshoppingrmoreiraowe --build-arg build_version=${{ github.sha }}  --file Shopping.Client/Dockerfile .
 
-         # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+        - name: Set up kubelogin for non-interactive login
+          run: |
+            curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
+            sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
+            rm -f kubelogin-linux-amd64.zip
+            kubelogin --version
+
+
+        # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
         - name: Get K8s context
           uses: azure/aks-set-context@v3
           with:
+            # Non-interactive login: https://github.com/Azure/k8s-deploy/issues/239
+            # And here: https://github.com/Azure/aks-set-context#kubelogin
+            admin: 'true'
+            use-kubelogin: 'true'
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
