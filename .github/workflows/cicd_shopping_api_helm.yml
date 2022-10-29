@@ -25,13 +25,13 @@ jobs:
     steps:
         - uses: actions/checkout@v3
 
-        - name: setup kubelogin for non-interactive login
-          shell: bash
-          run: |
-            curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
-            sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
-            rm -f kubelogin-linux-amd64.zip
-            kubelogin --version
+        # - name: setup kubelogin for non-interactive login
+        #   shell: bash
+        #   run: |
+        #     curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
+        #     sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
+        #     rm -f kubelogin-linux-amd64.zip
+        #     kubelogin --version
 
         - name: Log in with Azure
           uses: Azure/login@v1
@@ -48,6 +48,8 @@ jobs:
         - name: Get K8s context
           uses: azure/aks-set-context@v3
           with:
+            admin: 'false'
+            use-kubelogin: 'true'
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
 
