@@ -58,7 +58,7 @@ jobs:
           with:
             # Non-interactive login: https://github.com/Azure/k8s-deploy/issues/239
             # And here: https://github.com/Azure/aks-set-context#kubelogin
-            admin: 'false'
+            # admin: 'false'
             use-kubelogin: 'true'
             resource-group: ${{ env.rgName }}
             cluster-name: ${{ env.AKS_CLUSTER_NAME }}
